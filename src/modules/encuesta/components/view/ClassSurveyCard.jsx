@@ -2,6 +2,8 @@ import { Calendar, Clock, User } from 'lucide-react';
 import { useRatingForm } from '../viewmodel/useRatingForm';
 import { useMeetingData } from '../viewmodel/useMeetingData';
 import { useHostData } from '../viewmodel/userHostData';
+import { Loading } from '../../../shared/partials/loading/Loading';
+import { NotLoaded } from '../../../shared/partials/notLoaded/NotLoaded';
 
 export default function ClassSurveyCard({ idMeeting, idHost }) {
   const {
@@ -24,11 +26,11 @@ export default function ClassSurveyCard({ idMeeting, idHost }) {
   } = useHostData(idHost);
 
   if (isLoadingMeeting || isLoadingParticipant) {
-    return <p className="text-center">Cargando información de la clase...</p>;
+    return <Loading module={"clase"}/>;
   }
 
   if (meetingError || !meeting) {
-    return <p className="text-center text-red-500">No se pudo cargar la reunión.</p>;
+    return <NotLoaded/>;;
   }
 
   const startDate = new Date(meeting.start_time);
