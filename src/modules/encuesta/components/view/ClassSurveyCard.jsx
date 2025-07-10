@@ -1,4 +1,4 @@
-import { Calendar, Clock, User } from 'lucide-react';
+import { Calendar, Clock, User, Star } from 'lucide-react';
 import { useRatingForm } from '../viewmodel/useRatingForm';
 import { useMeetingData } from '../viewmodel/useMeetingData';
 import { useHostData } from '../viewmodel/userHostData';
@@ -30,53 +30,59 @@ export default function ClassSurveyCard({ idMeeting, idHost }) {
   }
 
   if (meetingError || !meeting) {
-    return <NotLoaded/>;;
+    return <NotLoaded/>;
   }
 
   const startDate = new Date(meeting.start_time);
   const endDate = new Date(startDate.getTime() + meeting.duration * 60000);
 
   return (
-    <div className="w-full sm:w-[400px] mx-auto bg-white rounded-2xl shadow-lg p-6 text-center space-y-4">
-      <div className="flex justify-center">
-        <div className="bg-blue-100 p-3 rounded-full">
-          <User className="text-blue-600" />
+    <div className="w-full sm:w-[400px] mx-auto bg-white rounded-2xl shadow-lg p-6 text-center space-y-4 border border-gray-200 font-sans">
+      {/* Encabezado con estrella animada */}
+      <div className="flex justify-center animate-bounce">
+        <div className="bg-[#F0F4FF] p-3 rounded-full shadow-inner">
+          <Star className="text-[#7B61FF] fill-[#7B61FF]" size={24} />
         </div>
       </div>
-      <h2 className="text-xl font-semibold">Encuesta de clase</h2>
-      <p className="text-gray-500 text-sm">Tu opinión nos ayuda a mejorar.</p>
-      <hr />
+      <h2 className="text-xl font-semibold text-[#4A4A4A]">Encuesta de clase</h2>
+      <p className="text-[#4A4A4A]/80 text-sm">Tu opinión nos ayuda a mejorar.</p>
+      
+      <div className="h-px bg-[#E6E8F0] w-full my-2"></div>
 
-      <div className="font-semibold text-lg">{meeting.topic}</div>
+      {/* Título de la clase en mayúsculas */}
+      <div className="font-semibold text-lg text-[#7B61FF] uppercase tracking-wide">{meeting.topic}</div>
 
-      <div className="bg-gray-50 rounded-xl p-4 text-left space-y-2 text-sm">
-        <div className="flex items-center gap-2 text-gray-700">
-          <User size={16} /> {participant?.user_name || 'Docente'}
+      {/* Contenido de la clase - compacto */}
+      <div className="bg-[#F0F4FF] rounded-xl p-2 text-left space-y-1 text-xs">
+        <div className="flex items-center gap-2 text-[#4A4A4A]">
+          <User size={14} className="text-[#7B61FF]" /> {participant?.user_name || 'Docente'}
         </div>
-        <div className="flex items-center gap-2 text-gray-700">
-          <Calendar size={16} /> {startDate.toLocaleDateString()}
+        <div className="flex items-center gap-2 text-[#4A4A4A]">
+          <Calendar size={14} className="text-[#7B61FF]" /> {startDate.toLocaleDateString()}
         </div>
-        <div className="flex items-center gap-2 text-gray-700">
-          <Clock size={16} /> Inicio: {startDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+        <div className="flex items-center gap-2 text-[#4A4A4A]">
+          <Clock size={14} className="text-[#7B61FF]" /> Inicio: {startDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
         </div>
-        <div className="flex items-center gap-2 text-gray-700">
-          <Clock size={16} /> Fin: {endDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+        <div className="flex items-center gap-2 text-[#4A4A4A]">
+          <Clock size={14} className="text-[#7B61FF]" /> Fin: {endDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
         </div>
-        <div className="flex items-center gap-2 text-gray-700">
-          <Clock size={16} /> Duración: {meeting.duration} min
+        <div className="flex items-center gap-2 text-[#4A4A4A]">
+          <Clock size={14} className="text-[#7B61FF]" /> Duración: {meeting.duration} min
         </div>
       </div>
 
-      <hr />
+      <div className="h-px bg-[#E6E8F0] w-full my-2"></div>
+
+      {/* Sección de rating */}
       {!hasSubmitted && (
         <>
-          <div className="text-sm font-semibold">Califica tu experiencia</div>
-          <div className="flex justify-center gap-1">
+          <div className="text-lg font-medium text-[#4A4A4A] mb-3">Califica tu experiencia</div>
+          <div className="flex justify-center gap-1 mb-4">
             {[1, 2, 3, 4, 5].map((star) => (
               <button
                 key={star}
                 onClick={() => setRating(star)}
-                className={`text-2xl ${star <= rating ? 'text-yellow-400' : 'text-gray-300'}`}
+                className={`text-3xl transition-all duration-200 ${star <= rating ? 'text-[#F6C44B] scale-110' : 'text-gray-300 hover:text-[#F6C44B]/70 hover:scale-105'}`}
               >
                 ★
               </button>
@@ -85,11 +91,12 @@ export default function ClassSurveyCard({ idMeeting, idHost }) {
         </>
       )}
 
+      {/* Botón */}
       <button
         onClick={handleSubmit}
-        className={`w-full mt-2 py-2 rounded-xl text-white transition ${rating > 0 && !isSaving
-            ? 'bg-blue-600 hover:bg-blue-700'
-            : 'bg-blue-100 cursor-not-allowed'
+        className={`w-full mt-2 py-3 rounded-xl text-white font-medium transition-all duration-300 ${rating > 0 && !isSaving
+            ? 'bg-[#7B61FF] hover:bg-[#6A50EE] shadow-md hover:shadow-lg'
+            : 'bg-[#E6E8F0] cursor-not-allowed'
           }`}
         disabled={rating === 0 || isSaving || hasSubmitted}
       >
@@ -97,7 +104,7 @@ export default function ClassSurveyCard({ idMeeting, idHost }) {
           ? 'Enviando...'
           : hasSubmitted
             ? '¡Gracias por tu opinión!'
-            : 'Enviar Calificación'}
+            : 'Enviar calificación'}
       </button>
     </div>
   );
