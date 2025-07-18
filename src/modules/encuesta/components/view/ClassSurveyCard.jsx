@@ -4,6 +4,7 @@ import { useMeetingData } from '../viewmodel/useMeetingData';
 import { useHostData } from '../viewmodel/userHostData';
 import { Loading } from '../../../shared/partials/loading/Loading';
 import { NotLoaded } from '../../../shared/partials/notLoaded/NotLoaded';
+import { parse } from 'date-fns';
 
 export default function ClassSurveyCard({ idMeeting, idHost }) {
   const {
@@ -26,14 +27,14 @@ export default function ClassSurveyCard({ idMeeting, idHost }) {
   } = useHostData(idHost);
 
   if (isLoadingMeeting || isLoadingParticipant) {
-    return <Loading module={"clase"}/>;
+    return <Loading module={"clase"} />;
   }
 
   if (meetingError || !meeting) {
-    return <NotLoaded/>;
+    return <NotLoaded />;
   }
 
-  const startDate = new Date(meeting.start_time);
+  const startDate = parse(meeting.start_time, "dd/MM/yyyy, HH:mm", new Date());
   const endDate = new Date(startDate.getTime() + meeting.duration * 60000);
 
   return (
@@ -46,7 +47,7 @@ export default function ClassSurveyCard({ idMeeting, idHost }) {
       </div>
       <h2 className="text-xl font-semibold text-[#4A4A4A]">Encuesta de clase</h2>
       <p className="text-[#4A4A4A]/80 text-sm">Tu opinión nos ayuda a mejorar.</p>
-      
+
       <div className="h-px bg-[#E6E8F0] w-full my-2"></div>
 
       {/* Título de la clase en mayúsculas */}
@@ -95,8 +96,8 @@ export default function ClassSurveyCard({ idMeeting, idHost }) {
       <button
         onClick={handleSubmit}
         className={`w-full mt-2 py-3 rounded-xl text-white font-medium transition-all duration-300 ${rating > 0 && !isSaving
-            ? 'bg-[#7B61FF] hover:bg-[#6A50EE] shadow-md hover:shadow-lg'
-            : 'bg-[#E6E8F0] cursor-not-allowed'
+          ? 'bg-[#7B61FF] hover:bg-[#6A50EE] shadow-md hover:shadow-lg'
+          : 'bg-[#E6E8F0] cursor-not-allowed'
           }`}
         disabled={rating === 0 || isSaving || hasSubmitted}
       >
